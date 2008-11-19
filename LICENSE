@@ -1,15 +1,3 @@
-sitr.us/buscatcher
-==================
-
-A location-aware web application that displays arrival times for nearby bus and lightrail lines.
-
-Currently supported transit services include Portland's Trimet.
-
-Note that this application is under heavy development.
-
-License
-========
-
 The MIT License
 
 Copyright (c) 2008 Jesse Hallett <hallettj@gmail.com>
