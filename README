@@ -7,6 +7,33 @@ Currently supported transit services include Portland's Trimet.
 
 Note that this application is under heavy development.
 
+
+buscatcher in text mode
+-------------------------
+
+create a script that looks like this:
+
+  #!/bin/sh
+  curl -qLF "location=$*" http://buscatcher.sitr.us/location 2>/dev/null | lynx -dump -stdin | perl -pe 's/^(\s+\*)/*/; s/^(\s+)/  /g'
+
+and then run a command like this:
+
+[orz:~] % buscatch "SE Taylor & Grand"
+  Stops near your location
+  * SE Grand & Taylor StopID: 11483 distance: 0.018 miles
+  + 6 M L King Jr to Jantzen Beach arriving in 8 minutes
+  + 6 M L King Jr to Jantzen Beach arriving in 12 minutes
+* SE Grand & Belmont StopID: 11484 distance: 0.092 miles
+  + 6 M L King Jr to Jantzen Beach arriving in 8 minutes
+  + 6 M L King Jr to Jantzen Beach arriving in 13 minutes
+* SE Grand & Main StopID: 2170 distance: 0.118 miles
+  + 6 M L King Jr to Jantzen Beach arriving in 7 minutes
+  + 6 M L King Jr to Jantzen Beach arriving in 12 minutes
+...
+
+Thanks go to Matt for designing this script.
+
+
 License
 ========
 
