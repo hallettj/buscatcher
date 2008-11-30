@@ -40,13 +40,14 @@ use_in_file_templates!
 
 __END__
 
-## where_are_you
+@@ where_are_you
 %h1 Where are you?
 %form{ :action => "/location", :method => :post }
   %input{ :type => "text", :name => "location", :size => "30" }
   %input{ :type => "submit", :name => "commit", :value => "  find nearby stops  " }
 
-## arrival_times
+
+@@ arrival_times
 %h1 Stops near your location
 %ul
   - @stops.each do |stop|
@@ -62,7 +63,8 @@ __END__
             - else
               == scheduled at #{arrival.scheduled}
 
-## layout
+
+@@ layout
 !!! XML
 !!! 1.1
 %html{ :xmlns => "http://www.w3.org/1999/xhtml", 'xml:lang'.to_sym => "en" }
