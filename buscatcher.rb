@@ -27,7 +27,12 @@ get '/' do
 =begin
   @stops = TrimetAPI::Stop.near(lat, lng).limit(5).by_distance_from(lat, lng)
 =end
-    haml :arrival_times
+    if @stops.empty?
+      haml :no_results
+    else
+      @title = @stops.first.desc
+      haml :arrival_times
+    end
   end
 end
 
@@ -55,8 +60,12 @@ __END__
   }
 
 
+@@ no_results
+%h1 No stops found near your location!
+
+
 @@ arrival_times
-%h1 Stops near your location
+%h1== Stops near #{html_escape @title}
 %ul
   - @stops.each do |stop|
     %li
@@ -77,7 +86,7 @@ __END__
 !!! 1.1
 %html{ :xmlns => "http://www.w3.org/1999/xhtml", 'xml:lang'.to_sym => "en" }
   %head
-    %title sitr.us/buscatcher
+    %title= [html_escape(@title), 'sitr.us/buscatcher'].compact.join(' - ')
   %body
     = yield
 
