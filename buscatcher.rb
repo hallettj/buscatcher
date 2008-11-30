@@ -49,8 +49,9 @@ __END__
 %script{ :type => "text/javascript" }
   if (window.google && google.gears) {
   var geo = google.gears.factory.create('beta.geolocation');
+  var positionOptions = { enableHighAccuracy: true };
   function updatePosition(position) { window.location = '/?lat=' + position.latitude + '&lng=' + position.longitude; }
-  geo.getCurrentPosition(updatePosition, null);
+  geo.getCurrentPosition(updatePosition, null, positionOptions);
   }
 
 
