@@ -45,6 +45,13 @@ __END__
 %form{ :action => "/location", :method => :post }
   %input{ :type => "text", :name => "location", :size => "30" }
   %input{ :type => "submit", :name => "commit", :value => "  find nearby stops  " }
+%script{ :type => "text/javascript", :src => "/gears_init.js" }
+%script{ :type => "text/javascript" }
+  if (window.google && google.gears) {
+  var geo = google.gears.factory.create('beta.geolocation');
+  function updatePosition(position) { window.location = '/?lat=' + position.latitude + '&lng=' + position.longitude; }
+  geo.getCurrentPosition(updatePosition, null);
+  }
 
 
 @@ arrival_times
