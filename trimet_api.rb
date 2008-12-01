@@ -175,6 +175,7 @@ module TrimetAPI
         dir  = Direction.first(:dir => a["dir"], :line_id => line.id)
         Arrival.new(:stop       => stop,
                     :direction  => dir,
+                    :line       => dir.line,
                     :block      => a["block"],
                     :departed   => (a["departed"] == "true"),
                     :estimated  => to_time(a["estimated"]),
