@@ -15,12 +15,13 @@ end
 get '/' do
   lat = params[:lat].to_f
   lng = params[:lng].to_f
+  acc = params[:acc].to_f
   if lat == 0.0 or lng == 0.0
     haml :where_are_you
   else
     @here = [lat, lng]
     @now = Time.now
-    @stops = TrimetAPI::Stop.near(*@here).limit(15).sort_by { |s| s.distance_from(*@here) }
+    @stops = TrimetAPI::Stop.near(lat, lng, 400 + acc).limit(15).sort_by { |s| s.distance_from(*@here) }
     @arrivals = TRIMET.arrivals_for(@stops).sort_by { |a| a.estimated || a.scheduled }
 
     # Filter out arrival times for lines that have arrival times listed for a closer stop
@@ -63,7 +64,7 @@ __END__
   if (window.google && google.gears) {
   var geo = google.gears.factory.create('beta.geolocation');
   var positionOptions = { enableHighAccuracy: true };
-  function updatePosition(position) { window.location = '/?lat=' + position.latitude + '&lng=' + position.longitude; }
+  function updatePosition(position) { if (position.accuracy < 800) window.location = '/?lat=' + position.latitude + '&lng=' + position.longitude + '&acc=' + position.accuracy; }
   geo.getCurrentPosition(updatePosition, null, positionOptions);
   }
 
