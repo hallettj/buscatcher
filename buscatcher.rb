@@ -27,8 +27,8 @@ get '/' do
     # Filter out arrival times for lines that have arrival times listed for a closer stop
     marked_lines = []
     @stops.each do |stop|
-      @arrivals.reject! { |a| a.stop == stop and marked_lines.include?(a.line) }
-      marked_lines += @arrivals.select { |a| a.stop == stop }.map { |a| a.line }
+      @arrivals.reject! { |a| a.stop == stop and marked_lines.include?(a.direction) }
+      marked_lines += @arrivals.select { |a| a.stop == stop }.map { |a| a.direction }
     end
 
     # Filter out stops that are not going to have any arrival times listed
