@@ -48,27 +48,36 @@ module TrimetAPI
     has n, :lines,      :through => :directions
     has n, :arrivals
 
-    def self.near(lat, lng, epsilon=0.004)
-      all :conditions => ["sqrt(pow(abs(lat - ?), 2) + pow(abs(lng - ?), 2)) <= ?", lat, lng, epsilon]
+    METERS_PER_DEGREE = 111132.09
+    METERS_PER_MILE   =   1609.344
+
+    # Returns all stops within +epsilon+ meters of a given point expressed as a latitude and longitude
+    def self.near(lat, lng, epsilon=400)
+      all :conditions => ["sqrt(pow(#{METERS_PER_DEGREE} * (lat - ?), 2) + 
+                                pow(#{METERS_PER_DEGREE} * (lng - ?) * cos((lat * 2.0 * PI()) / 360.0), 2)) <= ?",
+                          lat, lng, epsilon]
     end
 
     def self.by_distance_from(lat, lng)
-      all :order => ["sqrt(pow(abs(lat - ?), 2) + pow(abs(lng - ?), 2))", lat, lng]
+      all :order => ["sqrt(pow(11132.09 * (lat - ?), 2) + pow(11132.09 * (lng - ?) * cos((lat * 2.0 * PI()) / 360.0), 2))", 
+                      lat, lng, epsilon]
     end
 
     def self.limit(num)
       all :limit => num
     end
 
-    # Given the geocode of a starting point, returns a string describing the distance to this stop in miles
+    # Returns distance in meters between the stop and a given point expressed as a latitude and longitude
     def distance_from(latitude, longitude)
-      lati_miles  = 69.1 * (lat - latitude)
-      longi_miles = 69.1 * (lng - longitude) * Math.cos(((latitude / 57.0) * 2.0 * Math::PI) / 360.0)
-      Math.sqrt(lati_miles ** 2 + longi_miles ** 2)
+      delta_phi    = METERS_PER_DEGREE * (lat - latitude)
+      delta_lambda = METERS_PER_DEGREE * (lng - longitude) * Math.cos((lat * 2.0 * Math::PI) / 360.0)
+      Math.sqrt(delta_phi ** 2 + delta_lambda ** 2)
     end
 
-    def pretty_distance_from(latitude, longitude)
-      "%0.3f miles" % distance_from(latitude, longitude)
+    # Given the geocode of a starting point, returns a string describing the distance to this stop in miles
+    def pretty_distance_from(latitude, longitude, accuracy=0)
+      #"%0.2f miles" % (distance_from(latitude, longitude) / METERS_PER_MILE)
+      distance = "%0.0f meters" % distance_from(latitude, longitude)
     end
   end
 
