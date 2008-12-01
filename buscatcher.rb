@@ -18,15 +18,23 @@ get '/' do
   if lat == 0.0 or lng == 0.0
     haml :where_are_you
   else
-    @stops = TrimetAPI::Stop.near(lat, lng).limit(10).sort_by { |stop|
-      Math.sqrt((stop.lat - lat).abs ** 2 + (stop.lng - lng).abs ** 2)
-    }
-    @arrivals = TRIMET.arrivals_for(@stops).sort_by { |a| a.estimated || a.scheduled }
     @here = [lat, lng]
     @now = Time.now
-=begin
-  @stops = TrimetAPI::Stop.near(lat, lng).limit(5).by_distance_from(lat, lng)
-=end
+    @stops = TrimetAPI::Stop.near(*@here).limit(15).sort_by { |s| s.distance_from(*@here) }
+    @arrivals = TRIMET.arrivals_for(@stops).sort_by { |a| a.estimated || a.scheduled }
+
+    # Filter out arrival times for lines that have arrival times listed for a closer stop
+    marked_lines = []
+    @stops.each do |stop|
+      @arrivals.reject! { |a| a.stop == stop and marked_lines.include?(a.line) }
+      marked_lines += @arrivals.select { |a| a.stop == stop }.map { |a| a.line }
+    end
+
+    # Filter out stops that are not going to have any arrival times listed
+    @stops.reject! do |stop|
+      @arrivals.select { |a| a.stop == stop }.empty?
+    end
+
     if @stops.empty?
       haml :no_results
     else
@@ -71,7 +79,7 @@ __END__
     - @stops.each do |stop|
       %tr
         %td{ :colspan => "3" }
-          == #{html_escape stop.desc} StopID: #{html_escape stop.locid} distance: #{html_escape stop.distance_from(*@here)}
+          == #{html_escape stop.desc} StopID: #{html_escape stop.locid} distance: #{html_escape stop.pretty_distance_from(*@here)}
       - @arrivals.select { |a| a.stop == stop }.each do |arrival|
         %tr
           %td &nbsp;

@@ -64,7 +64,11 @@ module TrimetAPI
     def distance_from(latitude, longitude)
       lati_miles  = 69.1 * (lat - latitude)
       longi_miles = 69.1 * (lng - longitude) * Math.cos(((latitude / 57.0) * 2.0 * Math::PI) / 360.0)
-      "%0.3f miles" % Math.sqrt(lati_miles ** 2 + longi_miles ** 2)
+      Math.sqrt(lati_miles ** 2 + longi_miles ** 2)
+    end
+
+    def pretty_distance_from(latitude, longitude)
+      "%0.3f miles" % distance_from(latitude, longitude)
     end
   end
 
