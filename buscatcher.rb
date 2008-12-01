@@ -66,19 +66,21 @@ __END__
 
 @@ arrival_times
 %h1== Stops near #{html_escape @title}
-%ul
-  - @stops.each do |stop|
-    %li
-      == #{html_escape stop.desc} StopID: #{html_escape stop.locid} distance: #{html_escape stop.distance_from(*@here)}
-      %ul
-        - @arrivals.select { |a| a.stop == stop }.each do |arrival|
-          %li
-            = html_escape arrival.full_sign
-            - if arrival.estimated
-              arriving in 
+%table
+  %tbody
+    - @stops.each do |stop|
+      %tr
+        %td{ :colspan => "3" }
+          == #{html_escape stop.desc} StopID: #{html_escape stop.locid} distance: #{html_escape stop.distance_from(*@here)}
+      - @arrivals.select { |a| a.stop == stop }.each do |arrival|
+        %tr
+          %td &nbsp;
+          %td= html_escape arrival.short_sign
+          - if arrival.estimated
+            %td
               %b= arrival.time_remaining
-            - else
-              == scheduled at #{arrival.scheduled}
+          - else
+            %td= arrival.scheduled
 
 
 @@ layout
