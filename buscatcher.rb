@@ -86,7 +86,7 @@ __END__
 !!! 1.1
 %html{ :xmlns => "http://www.w3.org/1999/xhtml", 'xml:lang'.to_sym => "en" }
   %head
-    %title= [html_escape(@title), 'sitr.us/buscatcher'].compact.join(' - ')
+    %title= [html_escape(@title), 'sitr.us/buscatcher'].reject { |e| e.empty? }.join(' - ')
   %body
     = yield
 
