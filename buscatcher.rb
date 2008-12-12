@@ -21,6 +21,7 @@ get '/' do
   else
     @here = [lat, lng]
     @now = Time.now
+    @accuracy = acc
     @stops = TrimetAPI::Stop.near(lat, lng, 400 + acc).limit(15).sort_by { |s| s.distance_from(*@here) }
     @arrivals = TRIMET.arrivals_for(@stops).sort_by { |a| a.estimated || a.scheduled }
 
@@ -59,14 +60,25 @@ __END__
 %form{ :action => "/location", :method => :post }
   %input{ :type => "text", :name => "location", :size => "30" }
   %input{ :type => "submit", :name => "commit", :value => "  find nearby stops  " }
+#searching{ :style => "display:none" }
+  %h2 Trying to find your location...
+#your-location{ :style => "display:none" }
+  %h2 Found your location
+  %p
+    Found your location within
+    %span.accuracy
+    meters:
+  %p
+    %a.results-link
+#location-not-found{ :style => "display:none" }
+  %h2 Could not find your location
+  %p
+    Could not find your location with a margin-of-error of less than
+    %span.accuracy
+    meters.
+%script{ :type => "text/javascript", :src => "/jquery-1.2.6.pack.js" }
 %script{ :type => "text/javascript", :src => "/gears_init.js" }
-%script{ :type => "text/javascript" }
-  if (window.google && google.gears) {
-  var geo = google.gears.factory.create('beta.geolocation');
-  var positionOptions = { enableHighAccuracy: true };
-  function updatePosition(position) { if (position.accuracy < 800) window.location = '/?lat=' + position.latitude + '&lng=' + position.longitude + '&acc=' + position.accuracy; }
-  geo.getCurrentPosition(updatePosition, null, positionOptions);
-  }
+%script{ :type => "text/javascript", :src => "/locater.js" }
 
 
 @@ no_results
@@ -80,7 +92,7 @@ __END__
     - @stops.each do |stop|
       %tr
         %td{ :colspan => "3" }
-          == #{html_escape stop.desc} StopID: #{html_escape stop.locid} distance: #{html_escape stop.pretty_distance_from(*@here)}
+          == #{html_escape stop.desc} StopID: #{html_escape stop.locid} distance: #{html_escape stop.pretty_distance_from(*(@here + [@accuracy]))}
       - @arrivals.select { |a| a.stop == stop }.each do |arrival|
         %tr
           %td &nbsp;
