@@ -75,7 +75,11 @@ __END__
   %p
     Could not find your location with a margin-of-error of less than
     %span.accuracy
-    meters.
+    meters. Please enter an address above.
+#error{ :style => "display:none"}
+  %h2
+    An error occurred
+  %p.message
 %script{ :type => "text/javascript", :src => "/jquery-1.2.6.pack.js" }
 %script{ :type => "text/javascript", :src => "/gears_init.js" }
 %script{ :type => "text/javascript", :src => "/locator.js" }
