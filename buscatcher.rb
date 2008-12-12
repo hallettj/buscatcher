@@ -78,7 +78,7 @@ __END__
     meters.
 %script{ :type => "text/javascript", :src => "/jquery-1.2.6.pack.js" }
 %script{ :type => "text/javascript", :src => "/gears_init.js" }
-%script{ :type => "text/javascript", :src => "/locater.js" }
+%script{ :type => "text/javascript", :src => "/locator.js" }
 
 
 @@ no_results
