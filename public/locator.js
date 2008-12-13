@@ -34,7 +34,7 @@ if (window.google && google.gears) {
                         failure.show();
                     }
                 });
-            }
+            };
         },
         displayError: function() {
             var that = this;
