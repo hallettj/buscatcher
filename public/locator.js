@@ -1,3 +1,5 @@
+/*jslint browser: true */
+/*global google $ */
 if (window.google && google.gears) {
     var locator = {
         geo: google.gears.factory.create('beta.geolocation'),
