@@ -105,7 +105,9 @@ __END__
             %td
               %b= arrival.time_remaining
           - else
-            %td= arrival.scheduled
+            %td.relativize= arrival.scheduled
+%script{ :type => "text/javascript", :src => "/jquery-1.2.6.pack.js" }
+%script{ :type => "text/javascript", :src => "/relativize.js" }
 
 
 @@ layout
