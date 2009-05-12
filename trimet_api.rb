@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'rest_client'
 require 'xmlsimple'
 require 'dm-core'
@@ -204,7 +203,7 @@ module TrimetAPI
     protected
 
     def get_xml(url)
-      response = RestClient.get(url)
+      response = RestClient.get(url).to_s
       return XmlSimple.xml_in(response)
     end
 
