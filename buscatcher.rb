@@ -6,7 +6,7 @@ configure do
   APPID = ENV['TRIMET_APPID']
   SECRET = ENV['BUSCATCHER_SECRET']
   TRIMET = TrimetAPI::Connection.new(APPID)
-  #  TRIMET.load_routes_and_stops
+  mime :json, "application/json"
 end
 
 helpers do
@@ -50,6 +50,34 @@ end
 post '/location' do
   lat, lng = RestClient.get('http://tinygeocoder.com/create-api.php?q=' + CGI.escape(params[:location].to_s)).split(',')
   redirect "/?lat=#{lat}&lng=#{lng}", "You have been redirected."
+end
+
+get '/stops.:format' do
+  lat = params[:lat].to_f
+  lng = params[:lng].to_f
+  dist = (params[:dist] || 400).to_f
+  @stops = TrimetAPI::Stop.near(lat, lng, dist).sort_by { |s| s.distance_from(lat, lng) }
+  if @stops && !@stops.empty?
+    case params[:format]
+    when 'json'
+      content_type :json
+      @stops.map { |s| s.to_json }.to_json
+    else
+      pass
+    end
+  else
+    pass
+  end
+end
+
+post '/reload_routes_and_stops' do
+  secret = params[:secret]
+  if secret == SECRET
+    TRIMET.load_routes_and_stops
+    'success'
+  else
+    halt 403, 'Forbidden Action'
+  end
 end
 
 use_in_file_templates!
