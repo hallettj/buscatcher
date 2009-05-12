@@ -128,6 +128,8 @@ module TrimetAPI
     end
 
     def load_routes_and_stops(options={})
+      DataMapper.auto_migrate!  # Rebuild database from scratch.
+
       query = {
         :dir   => TrimetAPI.dir(options[:dir] || :all),
         :stops => (options[:stops] ? options[:stops].join(',') : 'all'),
