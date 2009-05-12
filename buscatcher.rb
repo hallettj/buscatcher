@@ -1,5 +1,5 @@
-require 'rubygems'
 require 'trimet_api'
+require 'cgi'
 require 'sinatra'
 
 configure do
