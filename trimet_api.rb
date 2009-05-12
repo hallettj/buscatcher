@@ -5,8 +5,7 @@ require 'dm-core'
 require 'dm-aggregates'
 
 RestClient.proxy = ENV['http_proxy']
-#DataMapper.setup(:default, "sqlite3::memory:")
-DataMapper.setup(:default, "mysql://localhost/buscatcher_development")
+DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3:://buscatcher.sqlite3')
 
 module TrimetAPI
 
