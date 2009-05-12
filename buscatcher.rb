@@ -3,7 +3,8 @@ require 'cgi'
 require 'sinatra'
 
 configure do
-  APPID = File.open('appid.txt','r') { |f| f.read.strip }
+  APPID = ENV['TRIMET_APPID']
+  SECRET = ENV['BUSCATCHER_SECRET']
   TRIMET = TrimetAPI::Connection.new(APPID)
   #  TRIMET.load_routes_and_stops
 end
