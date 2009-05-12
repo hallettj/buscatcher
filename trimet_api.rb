@@ -1,5 +1,6 @@
 require 'rest_client'
 require 'xmlsimple'
+require 'json'
 require 'dm-core'
 require 'dm-aggregates'
 
@@ -77,6 +78,10 @@ module TrimetAPI
     def pretty_distance_from(latitude, longitude, accuracy=0)
       #"%0.2f miles" % (distance_from(latitude, longitude) / METERS_PER_MILE)
       distance = "%0.0f meters" % distance_from(latitude, longitude)
+    end
+
+    def to_json
+      { :locid => locid, :desc => desc, :lat => lat, :lng => lng, :seq => seq, :tp => tp }.to_json
     end
   end
 
