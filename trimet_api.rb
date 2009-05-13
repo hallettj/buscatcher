@@ -40,7 +40,6 @@ module TrimetAPI
     property :lat,   Float
     property :lng,   Float
     property :seq,   Integer
-    property :tp,    Boolean
     #    has n, :directions, :through => Resource, :class_name => "::TrimetAPI::Direction", :child_key => [:direction_id]
     has n, :stoppings
     has n, :directions, :through => :stoppings
@@ -80,7 +79,7 @@ module TrimetAPI
     end
 
     def to_json
-      { :locid => locid, :desc => desc, :lat => lat, :lng => lng, :seq => seq, :tp => tp }.to_json
+      { :locid => locid, :desc => desc, :lat => lat, :lng => lng, :seq => seq }.to_json
     end
   end
 
@@ -157,8 +156,7 @@ module TrimetAPI
               :desc  => s["desc"],
               :lat   => s["lat"].to_f,
               :lng   => s["lng"].to_f,
-              :seq   => s["seq"].to_i,
-              :tp    => (s["tp"] == "true")
+              :seq   => s["seq"].to_i
             }
             stop.save
             direction.stoppings.first(:stop_id => stop.id) || direction.stoppings.create(:stop => stop)
