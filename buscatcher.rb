@@ -18,6 +18,7 @@ get '/' do
   lng = params[:lng].to_f
   acc = params[:acc].to_f
   if lat == 0.0 or lng == 0.0
+    headers['Cache-Control'] = 'public, max-age=43200'  # Cache response for up to 12 hours.
     haml :where_are_you
   else
     @here = [lat, lng]
@@ -39,9 +40,11 @@ get '/' do
     end
 
     if @stops.empty?
+      headers['Cache-Control'] = 'public, max-age=43200'  # Cache response for up to 12 hours.
       haml :no_results
     else
       @title = @stops.first.desc
+      headers['Cache-Control'] = 'public, max-age=60'  # Cache response for up to 1 minute.
       haml :arrival_times
     end
   end
@@ -57,16 +60,17 @@ get '/stops.:format' do
   lng = params[:lng].to_f
   dist = (params[:dist] || 400).to_f
   @stops = TrimetAPI::Stop.near(lat, lng, dist).sort_by { |s| s.distance_from(lat, lng) }
+  headers['Cache-Control'] = 'public, max-age=43200'  # Cache response for up to 12 hours.
   if @stops && !@stops.empty?
     case params[:format]
     when 'json'
       content_type :json
       @stops.map { |s| s.to_json }.to_json
     else
-      pass
+      halt 404, 'No stops found.'
     end
   else
-    pass
+    halt 404, 'lat and lng parameters were not specified correctly.'
   end
 end
 
