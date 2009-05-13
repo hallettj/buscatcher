@@ -65,7 +65,9 @@ get '/stops.:format' do
     case params[:format]
     when 'json'
       content_type :json
-      @stops.map { |s| s.to_json }.to_json
+      @stops.map { |s|
+        { :locid => s.locid, :desc => s.desc, :lat => s.lat, :lng => s.lng, :seq => s.seq }
+      }.to_json
     else
       halt 404, 'No stops found.'
     end
