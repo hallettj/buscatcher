@@ -57,17 +57,16 @@ if (window.google && google.gears) {
                 });
             };
         },
-        watchPosition: function() {
+        getPosition: function() {
             var successCallback = this.updatePosition();
             var errorCallback   = this.displayError();
-//            this.geo.getCurrentPosition(successCallback, errorCallback, this.positionOptions);
-            this.watchId = this.geo.watchPosition(successCallback, errorCallback, this.positionOptions);
+            this.geo.getCurrentPosition(successCallback, errorCallback, this.positionOptions);
         },
         execute: function() {
             var that = this;
-            that.watchPosition();
             $(document).ready(function() { 
                 that.searchingMessage().show();
+                that.getPosition();
             });
         }
     };
